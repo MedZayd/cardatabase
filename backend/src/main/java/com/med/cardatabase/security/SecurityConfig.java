@@ -32,11 +32,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().cors().and().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
-		.anyRequest().authenticated()
-		.and()
-		.addFilterAfter(new LoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-		.addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.csrf().disable().cors().and().authorizeRequests().anyRequest().permitAll();
+		
+		/*
+		 * http.csrf().disable().cors().and().authorizeRequests().antMatchers(HttpMethod
+		 * .POST, "/login").permitAll() .anyRequest().authenticated() .and()
+		 * .addFilterAfter(new LoginFilter("/login", authenticationManager()),
+		 * UsernamePasswordAuthenticationFilter.class) .addFilterBefore(new
+		 * AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		 */
+		 
 	}
 	
 	@Bean
