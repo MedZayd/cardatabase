@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.med.cardatabase.domain.Car;
 import com.med.cardatabase.repository.CarRepository;
 
-// @RestController
+@RestController
 public class CarController {
 
-	/*@Autowired
+	@Autowired
 	private CarRepository carRepo; 
 	
 	@RequestMapping("/cars")
 	public Iterable<Car> getCars(){
 		return carRepo.findAll();
-	};*/
+	};
 }
