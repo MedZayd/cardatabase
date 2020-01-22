@@ -1,6 +1,7 @@
 // @flow
 
 import { Button, Typography, withStyles } from "@material-ui/core";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import ErrorAlert from "../../common/ErrorAlert";
@@ -31,14 +32,14 @@ type Props = {
 type State = {
 	alert: boolean,
 	link: string | null,
-	openFormPopup: boolean
+	addFormOpen: boolean
 };
 
 class CarsContainer extends Component<Props, State> {
 	state = {
 		alert: false,
 		link: null,
-		openFormPopup: false
+		addFormOpen: false
 	};
 
 	componentDidMount() {
@@ -49,22 +50,38 @@ class CarsContainer extends Component<Props, State> {
 		this.setState(prevState => ({ alert: !prevState.alert }));
 	};
 
-	handleFormPopup = () => {
-		this.setState(prevState => ({ openFormPopup: !prevState.openFormPopup }));
+	handleAddFormOpen = () => {
+		this.setState(prevState => ({ addFormOpen: !prevState.addFormOpen }));
 	};
 
-	handleOnDelete = url => {
+	handleConfirmDelete = url => {
 		this.setState({ link: url });
 		this.handleAlert();
 	};
 
-	deleteCar = () => {
+	handleOnDeleteCar = () => {
 		if (this.state.link) {
 			this.props.onDeleteCar(this.state.link);
 			this.setState({ link: null });
 		}
 		this.handleAlert();
 	};
+
+	handleAddFormSubmit = values => {
+		console.log(values);
+		this.handleAddFormOpen();
+	};
+
+	renderAlertPopupActions = () => (
+		<Fragment>
+			<Button onClick={this.handleAlert} color="secondary" autoFocus>
+				Cancel
+			</Button>
+			<Button onClick={this.handleOnDeleteCar} color="primary">
+				Confirm
+			</Button>
+		</Fragment>
+	);
 
 	render() {
 		const { cars, classes } = this.props;
@@ -80,9 +97,11 @@ class CarsContainer extends Component<Props, State> {
 						<Typography component="h5" variant="h5" gutterBottom>
 							Cars
 						</Typography>
-						<Button onClick={this.handleFormPopup}>Open</Button>
+						<Button onClick={this.handleAddFormOpen} startIcon={<AddCircleIcon />}>
+							Add a new car
+						</Button>
 					</div>
-					<CarList cars={cars.list} handleOnDelete={this.handleOnDelete} />
+					<CarList cars={cars.list} handleOnDelete={this.handleConfirmDelete} />
 				</Fragment>
 			);
 		}
@@ -91,18 +110,7 @@ class CarsContainer extends Component<Props, State> {
 			content = <ErrorAlert msg={cars.error} />;
 		}
 
-		const popupActions = (
-			<Fragment>
-				<Button onClick={this.handleAlert} color="primary" autoFocus>
-					Cancel
-				</Button>
-				<Button onClick={this.deleteCar} color="secondary">
-					Confirm
-				</Button>
-			</Fragment>
-		);
-
-		const { alert, openFormPopup } = this.state;
+		const { alert, addFormOpen } = this.state;
 		return (
 			<Fragment>
 				{content}
@@ -111,14 +119,18 @@ class CarsContainer extends Component<Props, State> {
 					content="Do you really want to delete this record? This process cannot be undone."
 					open={alert}
 					handleClose={this.handleAlert}
-					actions={popupActions}
+					actions={this.renderAlertPopupActions()}
 				/>
 				<Popup
 					title="Add new car"
-					content={<CarForm />}
-					actions={<Button onClick={this.handleFormPopup}>Cancel</Button>}
-					open={openFormPopup}
-					handleClose={this.handleFormPopup}
+					content={
+						<CarForm
+							onSubmit={this.handleAddFormSubmit}
+							onCancel={this.handleAddFormOpen}
+						/>
+					}
+					open={addFormOpen}
+					handleClose={this.handleAddFormOpen}
 				/>
 			</Fragment>
 		);
