@@ -1,7 +1,6 @@
 package com.med.cardatabase.security;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 
 import javax.servlet.FilterChain;
